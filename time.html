@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Time</title>
+        <link rel="icon" href="">
+        
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            html, body{
+                position: relative;
+                margin: 0;
+                height: 100vh;
+                height: -moz-available;                     /* WebKit-based browsers will ignore this. */
+                height: -webkit-fill-available;             /* Mozilla-based browsers will ignore this. */
+                color: #333;
+            }
+            #time-full{
+                /* font-size: 8rem; */
+                position: absolute;
+                transform: translate(-50%, -50%);
+                top: 50%;
+                left: 50%;
+                display: flex;
+                gap: 1rem;
+                /* letter-spacing: -2px; */
+            }
+            .time-wrapper{
+                position: relative;
+            }
+            .time-wrapper:after{
+                content: attr(data-type);
+                position: absolute;
+                color: crimson;
+                font-size: 1rem;
+                top: 103%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .new{
+                position: absolute;
+            }
+
+            .new, .old{
+                /* min-width:6rem; */
+                text-align: center;
+            }
+            #font-switch{
+                display: flex;
+                align-items: center;
+                gap:10px;
+                cursor: pointer;
+            }
+            #switch-border{
+                border: 1px solid #aaa;
+                width: 16px;
+                height: 16px;
+            }
+            #check-svg{
+                width:28px;
+                color:crimson;
+                cursor:pointer;
+                position: absolute;
+                top:-6px;
+                left:-1px;
+            }
+            #check-svg path{
+                opacity: 0;
+                transition: all 0.3s;
+                stroke-dashoffset: 1;
+                stroke-dasharray: 1;
+            }
+            #check-svg-wrapper{
+                position: relative;
+            }
+
+            #misc{
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                bottom:20%;
+                right: 10%;
+                gap:1rem;
+            }
+            #social{
+                display: flex;
+                flex-direction: column;
+                gap:0.75rem;
+            }
+            #social-icons{
+                width: 100%;
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+            }
+            .social-ico{
+                cursor: pointer;
+                transition: 0.25s;
+                fill: #333;
+                width: 24px;
+            }
+            .social-ico:hover{
+                opacity: 0.75;
+                transform: scale(1.1);
+            }
+        </style>
+    </head>
+        
+    <body>
+        <div id=time-full>
+            <div class=time-wrapper id=days data-type=Days>
+                <div class=new id=days-new></div>
+                <div class=old id=days-old></div>
+            </div>
+            <div class=divider>:</div>
+            <div class=time-wrapper id=hours data-type=Hours>
+                <div class=new id=hours-new></div>
+                <div class=old id=hours-old></div>
+            </div>
+            <div class=divider>:</div>
+            <div  class=time-wrapper id=minutes data-type=Minutes>
+                <div class=new id=minutes-new></div>
+                <div class=old id=minutes-old></div>
+            </div>
+            <div class=divider>:</div>
+            <div  class=time-wrapper id=seconds data-type=Seconds>
+                <div class=new id=seconds-new></div>
+                <div class=old id=seconds-old></div>
+            </div>
+        </div>
+
+        <div id=misc>
+            <div id=font-switch>
+                <div id=switch-text>Special Font</div>
+                <div id=check-svg-wrapper>
+                    <div id=switch-border></div>
+                    <svg id=check-svg viewBox="0 2 24 24" aria-hidden="true" focusable="false"><path pathLength=1 fill="none" stroke="currentColor" stroke-width="3" d="M1.73 12.91l6.37 6.37L22.79 4.59"/></svg>
+                </div>
+            </div>
+
+            <div id=social>
+                <div id=social-text>Bfesfsefse Media</div>
+                <div id=social-icons>
+                    <a><svg class=social-ico viewBox="0 0 24 24"><title>Facebook</title><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                    <a><svg class=social-ico viewBox="0 0 24 24"><title>Twitter</title><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        "use strict;"
+
+        // TODO
+        //      - links to social media 
+        //      - get fonts
+        //      - find img + ico
+        //      - set exact time
+
+        //      - what happens !
+
+        const $ = document.querySelector.bind(document);
+
+        const baseFont = 'Arial';
+        const specFont = 'Franklin Gothic Medium';
+
+        $("body").style.fontFamily = baseFont;
+
+        const start = new Date("2025-03-21 10:00");
+        const transition = 0.7;     // Seconds
+
+        const countdownNew = {
+            days: $("#days-new"),
+            hours: $("#hours-new"),
+            minutes: $("#minutes-new"),
+            seconds: $("#seconds-new"),
+        };
+        const countdownOld = {
+            days: $("#days-old"),
+            hours: $("#hours-old"),
+            minutes: $("#minutes-old"),
+            seconds: $("#seconds-old")
+        };
+
+        var mainInterval;
+        var tillStart;
+
+        setUp();
+
+        // Reset interval on blur/focus - interval in background tab behaves weirdly
+        window.addEventListener("blur", function(){
+            console.log("blur");
+
+            clearInterval(mainInterval);
+        });
+        window.addEventListener("focus", function(){
+            
+            clearInterval(mainInterval);
+            setUp();
+        });
+
+        function setUp(){
+            tillStart = (start.getTime() - new Date().getTime()) / 1000;
+
+            if(tillStart < 0){
+                finished(true);
+                throw 0;
+            }
+            
+            // Init
+            let tillNextSecond = parseInt(new Date().getTime().toString().slice(-3));
+
+            updateTime(true);
+            setTimeout(function(){
+                updateTime();
+
+                mainInterval = setInterval(updateTime, 1000);
+            }, tillNextSecond);
+
+            document.querySelector("#font-switch").addEventListener("click", function(){
+                let path = this.querySelector("path");
+
+                if(path.style.strokeDashoffset == 1 || path.style.strokeDashoffset == ""){
+                    path.style.strokeDashoffset = 0;
+                    path.style.opacity = 1;
+                    $("body").style.fontFamily = specFont;
+                } else {
+                    path.style.strokeDashoffset = 1;
+                    path.style.opacity = 0;
+                    $("body").style.fontFamily = baseFont;
+                }
+            });
+        }
+       
+
+        function updateTime(first = false){
+            if(!first){
+                tillStart -= 1;
+            }
+
+            if(tillStart < 0){
+                finished();
+                return;
+            }
+
+            let countdownUpdate = {
+                days: Math.trunc(tillStart / 86400).toString(),
+                hours: Math.trunc((tillStart % 86400) / 3600).toString().padStart(2, "0"),
+                minutes: Math.trunc((tillStart % 3600) / 60).toString().padStart(2, "0"),
+                seconds: Math.trunc(tillStart % 60).toString().padStart(2, "0")
+            }
+
+            for(const property in countdownNew){
+                countdownNew[property].textContent = countdownUpdate[property];
+
+                countdownNew[property].style.transition = transition + "s";
+                countdownNew[property].style.opacity = "1";
+            }
+            for(const property in countdownOld){
+                if(!first){
+                    countdownOld[property].style.transition = transition + "s";
+                    countdownOld[property].style.opacity = "0";
+                } else {
+                    countdownOld[property].textContent = countdownUpdate[property];
+                }
+            }
+
+            if(!first){
+                setTimeout(function(){
+                    for(const property in countdownNew){
+                        countdownNew[property].style.transition = "0s";
+                        countdownNew[property].style.opacity = "0";
+                    }
+                    for(const property in countdownOld){
+                        countdownOld[property].textContent = countdownUpdate[property];
+    
+                        countdownOld[property].style.transition = "0s";
+                        countdownOld[property].style.opacity = "1";
+                    }
+    
+                }, transition * 1000);
+            }
+        }
+
+        function finished(datePassedAlready = false){
+            clearInterval(mainInterval);
+        }
+    </script>
+</html>
