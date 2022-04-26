@@ -154,136 +154,140 @@
         // TODO
         //      - links to social media 
         //      - get fonts
-        //      - find img + ico
+        //      - find background img + ico
         //      - set exact time
 
-        //      - what happens !
+        //      - what happens - google s victory, screenshot?, its happening, 
 
-        const $ = document.querySelector.bind(document);
+        (function(){
+            const $ = document.querySelector.bind(document);
 
-        const baseFont = 'Arial';
-        const specFont = 'Franklin Gothic Medium';
-
-        $("body").style.fontFamily = baseFont;
-
-        const start = new Date("2025-03-21 10:00");
-        const transition = 0.7;     // Seconds
-
-        const countdownNew = {
-            days: $("#days-new"),
-            hours: $("#hours-new"),
-            minutes: $("#minutes-new"),
-            seconds: $("#seconds-new"),
-        };
-        const countdownOld = {
-            days: $("#days-old"),
-            hours: $("#hours-old"),
-            minutes: $("#minutes-old"),
-            seconds: $("#seconds-old")
-        };
-
-        var mainInterval;
-        var tillStart;
-
-        setUp();
-
-        // Reset interval on blur/focus - interval in background tab behaves weirdly
-        window.addEventListener("blur", function(){
-            console.log("blur");
-
-            clearInterval(mainInterval);
-        });
-        window.addEventListener("focus", function(){
+            const baseFont = 'Arial';
+            const specFont = 'Franklin Gothic Medium';
             
-            clearInterval(mainInterval);
+            $("body").style.fontFamily = window.localStorage["font"] || baseFont;
+
+            const start = new Date("2025-03-21 10:00");
+            const transition = 0.7;         // Seconds
+
+            const countdownNew = {
+                days: $("#days-new"),
+                hours: $("#hours-new"),
+                minutes: $("#minutes-new"),
+                seconds: $("#seconds-new"),
+            };
+            const countdownOld = {
+                days: $("#days-old"),
+                hours: $("#hours-old"),
+                minutes: $("#minutes-old"),
+                seconds: $("#seconds-old")
+            };
+
+            var mainInterval;
+            var tillStart;
+
             setUp();
-        });
 
-        function setUp(){
-            tillStart = (start.getTime() - new Date().getTime()) / 1000;
-
-            if(tillStart < 0){
-                finished(true);
-                throw 0;
-            }
-            
-            // Init
-            let tillNextSecond = parseInt(new Date().getTime().toString().slice(-3));
-
-            updateTime(true);
-            setTimeout(function(){
-                updateTime();
-
-                mainInterval = setInterval(updateTime, 1000);
-            }, tillNextSecond);
-
-            document.querySelector("#font-switch").addEventListener("click", function(){
-                let path = this.querySelector("path");
-
-                if(path.style.strokeDashoffset == 1 || path.style.strokeDashoffset == ""){
-                    path.style.strokeDashoffset = 0;
-                    path.style.opacity = 1;
-                    $("body").style.fontFamily = specFont;
-                } else {
-                    path.style.strokeDashoffset = 1;
-                    path.style.opacity = 0;
-                    $("body").style.fontFamily = baseFont;
-                }
+            // Reset interval on blur/focus - interval in background tab behaves weirdly
+            window.addEventListener("blur", function(){
+                clearInterval(mainInterval);
             });
-        }
-       
 
-        function updateTime(first = false){
-            if(!first){
-                tillStart -= 1;
+            window.addEventListener("focus", function(){
+                clearInterval(mainInterval);
+                setUp();
+            });
+
+            function setUp(){
+                tillStart = (start.getTime() - new Date().getTime()) / 1000;
+
+                if(tillStart < 0){
+                    finished(true);
+                    throw 0;
+                }
+                
+                // Init
+                let tillNextSecond = parseInt(new Date().getTime().toString().slice(-3));
+
+                updateTime(true);
+                setTimeout(function(){
+                    updateTime();
+
+                    mainInterval = setInterval(updateTime, 1000);
+                }, tillNextSecond);
+
+                document.querySelector("#font-switch").addEventListener("click", function(){
+                    let path = this.querySelector("path");
+
+                    if(path.style.strokeDashoffset == 1 || path.style.strokeDashoffset == ""){
+                        path.style.strokeDashoffset = 0;
+                        path.style.opacity = 1;
+                        window.localStorage["font"] = specFont;
+                        
+                        $("body").style.fontFamily = specFont;
+                    } else {
+                        path.style.strokeDashoffset = 1;
+                        path.style.opacity = 0;
+                        window.localStorage["font"] = baseFont;
+
+                        $("body").style.fontFamily = baseFont;
+                    }
+                });
             }
+        
 
-            if(tillStart < 0){
-                finished();
-                return;
-            }
-
-            let countdownUpdate = {
-                days: Math.trunc(tillStart / 86400).toString(),
-                hours: Math.trunc((tillStart % 86400) / 3600).toString().padStart(2, "0"),
-                minutes: Math.trunc((tillStart % 3600) / 60).toString().padStart(2, "0"),
-                seconds: Math.trunc(tillStart % 60).toString().padStart(2, "0")
-            }
-
-            for(const property in countdownNew){
-                countdownNew[property].textContent = countdownUpdate[property];
-
-                countdownNew[property].style.transition = transition + "s";
-                countdownNew[property].style.opacity = "1";
-            }
-            for(const property in countdownOld){
+            function updateTime(first = false){
                 if(!first){
-                    countdownOld[property].style.transition = transition + "s";
-                    countdownOld[property].style.opacity = "0";
-                } else {
-                    countdownOld[property].textContent = countdownUpdate[property];
+                    tillStart -= 1;
+                }
+
+                if(tillStart < 0){
+                    finished();
+                    return;
+                }
+
+                let countdownUpdate = {
+                    days: Math.trunc(tillStart / 86400).toString(),
+                    hours: Math.trunc((tillStart % 86400) / 3600).toString().padStart(2, "0"),
+                    minutes: Math.trunc((tillStart % 3600) / 60).toString().padStart(2, "0"),
+                    seconds: Math.trunc(tillStart % 60).toString().padStart(2, "0")
+                }
+
+                for(const property in countdownNew){
+                    countdownNew[property].textContent = countdownUpdate[property];
+
+                    countdownNew[property].style.transition = transition + "s";
+                    countdownNew[property].style.opacity = "1";
+                }
+                for(const property in countdownOld){
+                    if(!first){
+                        countdownOld[property].style.transition = transition + "s";
+                        countdownOld[property].style.opacity = "0";
+                    } else {
+                        countdownOld[property].textContent = countdownUpdate[property];
+                    }
+                }
+
+                if(!first){
+                    setTimeout(function(){
+                        for(const property in countdownNew){
+                            countdownNew[property].style.transition = "0s";
+                            countdownNew[property].style.opacity = "0";
+                        }
+                        for(const property in countdownOld){
+                            countdownOld[property].textContent = countdownUpdate[property];
+        
+                            countdownOld[property].style.transition = "0s";
+                            countdownOld[property].style.opacity = "1";
+                        }
+        
+                    }, transition * 1000);
                 }
             }
 
-            if(!first){
-                setTimeout(function(){
-                    for(const property in countdownNew){
-                        countdownNew[property].style.transition = "0s";
-                        countdownNew[property].style.opacity = "0";
-                    }
-                    for(const property in countdownOld){
-                        countdownOld[property].textContent = countdownUpdate[property];
-    
-                        countdownOld[property].style.transition = "0s";
-                        countdownOld[property].style.opacity = "1";
-                    }
-    
-                }, transition * 1000);
+            function finished(datePassedAlready = false){
+                clearInterval(mainInterval);
             }
-        }
-
-        function finished(datePassedAlready = false){
-            clearInterval(mainInterval);
-        }
+        })();
     </script>
 </html>
